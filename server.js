@@ -62,8 +62,14 @@ server.post("/login", async (req, res) => {
         }
     })
     if(user){
-        const token = JWT.sign({"username": user.username, "password": user.password, "admin": user.admin}, process.env.SECRETKEY, {expiresIn: "6h"})
-        res.json({"token": token, "message":"Successful login"}).end()
+        try{
+            const token = JWT.sign({"username": user.username, "password": user.password, "admin": user.admin}, process.env.SECRETKEY, {expiresIn: "6h"})
+            res.json({"token": token, "message":"Successful login"}).end()
+        }
+        catch(err){
+            console.log(err)
+            res.status(401).json({"message":err}).end()
+        }
     }
     else{
         res.status(400).json({"message":"Wrong username or password"}).end()
